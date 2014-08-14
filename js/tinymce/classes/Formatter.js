@@ -179,19 +179,23 @@ define("tinymce/Formatter", [
 		}
 
 		function addKeyboardShortcuts() {
+			/*
+				Removed keyboard shortcuts for default styles.
+				These get overridden by SupportPoint custom styles.
+			*/
 			// Add some inline shortcuts
-			ed.addShortcut('ctrl+b', 'bold_desc', 'Bold');
-			ed.addShortcut('ctrl+i', 'italic_desc', 'Italic');
-			ed.addShortcut('ctrl+u', 'underline_desc', 'Underline');
+			// ed.addShortcut('ctrl+b', 'bold_desc', 'Bold');
+			// ed.addShortcut('ctrl+i', 'italic_desc', 'Italic');
+			// ed.addShortcut('ctrl+u', 'underline_desc', 'Underline');
 
-			// BlockFormat shortcuts keys
-			for (var i = 1; i <= 6; i++) {
-				ed.addShortcut('ctrl+' + i, '', ['FormatBlock', false, 'h' + i]);
-			}
+			// // BlockFormat shortcuts keys
+			// for (var i = 1; i <= 6; i++) {
+				// ed.addShortcut('ctrl+' + i, '', ['FormatBlock', false, 'h' + i]);
+			// }
 
-			ed.addShortcut('ctrl+7', '', ['FormatBlock', false, 'p']);
-			ed.addShortcut('ctrl+8', '', ['FormatBlock', false, 'div']);
-			ed.addShortcut('ctrl+9', '', ['FormatBlock', false, 'address']);
+			// ed.addShortcut('ctrl+7', '', ['FormatBlock', false, 'p']);
+			// ed.addShortcut('ctrl+8', '', ['FormatBlock', false, 'div']);
+			// ed.addShortcut('ctrl+9', '', ['FormatBlock', false, 'address']);
 		}
 
 		// Public functions
