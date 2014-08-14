@@ -1,12 +1,12 @@
 {
 	"name": "tinymce",
-	"version": "4.0.0",
+	"version": "4.1.4",
 	"repository": {
 		"type" : "git",
 		"url" : "https://github.com/tinymce/tinymce.git"
 	},
 	"description": "TinyMCE rich text editor",
-	"author": "Johan Sörlin <spocke@moxiecode.com>",
+	"author": "Rohit Lakhanpal <mail@rohit-lakhanpal.info>",
 	"bugs": { "url" : "http://www.tinymce.com/develop/bugtracker.php" },
 	"private": true,
 	"engines": {
