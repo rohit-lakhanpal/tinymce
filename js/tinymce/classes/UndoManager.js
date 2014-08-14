@@ -200,13 +200,34 @@ define("tinymce/UndoManager", [
 			 */
 			add: function(level, event) {
 				var i, settings = editor.settings, lastLevel;
+				
+				/// Support Point Change 1.1 Begin
+				var activeSectionLinkId = (sp && sp.editor && sp.editor.GetActiveSectionLink && $.isFunction(sp.editor.GetActiveSectionLink)) ?
+							sp.editor.GetActiveSectionLink() : "";
+				var activeTaskLinkId = (sp && sp.editor && sp.editor.GetActiveSectionLink && $.isFunction(sp.editor.GetActiveSectionLink)) ?
+						sp.editor.GetActiveTaskLink() : "";				
+				/// Support Point Change 1.1 End
 
 				level = level || {};
 				level.content = getContent();
+				
+				/// Support Point Change 1.2 Begin				
+				if (sp && sp.editor){ // Add additional attributes to level if sp is defined
+					level.activeSectionLinkId = activeSectionLinkId;
+					level.activeTaskLinkId = activeTaskLinkId;
+				}
+				/// Support Point Change 1.2 End
 
 				if (locks || editor.removed) {
 					return null;
 				}
+				
+				/// Support Point Change 1.4 Begin
+				// If the active section link && active task link are null, do not add
+				if (activeSectionLinkId == "" && activeTaskLinkId == ""){
+					return null;
+				}
+				/// Support Point Change 1.4 End
 
 				lastLevel = data[index];
 				if (editor.fire('BeforeAddUndo', {level: level, lastLevel: lastLevel, originalEvent: event}).isDefaultPrevented()) {
@@ -221,6 +242,13 @@ define("tinymce/UndoManager", [
 				// Set before bookmark on previous level
 				if (data[index]) {
 					data[index].beforeBookmark = beforeBookmark;
+					
+					/// Support Point Change 1.3 Begin				
+					if (sp && sp.editor){ // Add additional attributes to level if sp is defined
+						data.activeSectionLinkId = activeSectionLinkId;
+						data.activeTaskLinkId = activeTaskLinkId;
+					}
+					/// Support Point Change 1.3 End
 				}
 
 				// Time to compress
@@ -266,6 +294,12 @@ define("tinymce/UndoManager", [
 			 */
 			undo: function() {
 				var level;
+				/// Support Point Change 2.1 Begin
+				var activeSectionLinkId = (sp && sp.editor && sp.editor.GetActiveSectionLink && $.isFunction(sp.editor.GetActiveSectionLink)) ?
+							sp.editor.GetActiveSectionLink() : "";
+				var activeTaskLinkId = (sp && sp.editor && sp.editor.GetActiveSectionLink && $.isFunction(sp.editor.GetActiveSectionLink)) ?
+						sp.editor.GetActiveTaskLink() : "";				
+				/// Support Point Change 2.1 End
 
 				if (self.typing) {
 					self.add();
@@ -279,7 +313,17 @@ define("tinymce/UndoManager", [
 					if (index === 0) {
 						editor.isNotDirty = true;
 					}
-
+					
+					/// Support Point Change 2.2 Begin
+					if (sp && sp.editor && (level.activeSectionLinkId != activeSectionLinkId ||
+					    level.activeTaskLinkId != activeTaskLinkId)) {
+					    var sectionObj = $(".sectionTab li a[link-id='" + level.activeSectionLinkId + "']").parent("li");
+					    $(sectionObj).siblings().removeClass("active");
+					    $(sectionObj).addClass("active");
+					    sp.editor.SetActiveSectionLink(level.activeSectionLinkId);
+					}
+					/// Support Point Change 2.2 End
+					
 					editor.setContent(level.content, {format: 'raw'});
 					editor.selection.moveToBookmark(level.beforeBookmark);
 
@@ -297,9 +341,26 @@ define("tinymce/UndoManager", [
 			 */
 			redo: function() {
 				var level;
+				
+				/// Support Point Change 3.1 Begin
+				var activeSectionLinkId = (sp && sp.editor && sp.editor.GetActiveSectionLink && $.isFunction(sp.editor.GetActiveSectionLink)) ?
+							sp.editor.GetActiveSectionLink() : "";
+				var activeTaskLinkId = (sp && sp.editor && sp.editor.GetActiveSectionLink && $.isFunction(sp.editor.GetActiveSectionLink)) ?
+						sp.editor.GetActiveTaskLink() : "";				
+				/// Support Point Change 3.1 End
 
 				if (index < data.length - 1) {
 					level = data[++index];
+					
+					/// Support Point Change 3.2 Begin
+					if (sp && sp.editor && (level.activeSectionLinkId != activeSectionLinkId ||
+					    level.activeTaskLinkId != activeTaskLinkId)) {
+					    var sectionObj = $(".sectionTab li a[link-id='" + level.activeSectionLinkId + "']").parent("li");
+					    $(sectionObj).siblings().removeClass("active");
+					    $(sectionObj).addClass("active");
+					    sp.editor.SetActiveSectionLink(level.activeSectionLinkId);
+					}
+					/// Support Point Change 3.2 End
 
 					editor.setContent(level.content, {format: 'raw'});
 					editor.selection.moveToBookmark(level.bookmark);
