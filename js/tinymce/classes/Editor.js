@@ -635,6 +635,10 @@ define("tinymce/Editor", [
 				bodyClass = bodyClass[self.id] || '';
 			}
 
+			if (settings.content_security_policy) {
+				self.iframeHTML += '<meta http-equiv="Content-Security-Policy" content="' + settings.content_security_policy + '" />';
+			}
+
 			self.iframeHTML += '</head><body id="' + bodyId +
 				'" class="mce-content-body ' + bodyClass +
 				'" data-id="' + self.id + '"><br></body></html>';
@@ -673,7 +677,7 @@ define("tinymce/Editor", [
 				self.fire("load");
 			};
 
-			DOM.setAttrib("src", url || 'javascript:""');
+			DOM.setAttrib(ifr, "src", url || 'javascript:""');
 
 			self.contentAreaContainer = o.iframeContainer;
 			self.iframeElement = ifr;
